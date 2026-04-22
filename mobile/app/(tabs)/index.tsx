@@ -1,5 +1,7 @@
 import { Link } from "expo-router";
-import { Text, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
+import { task } from "../utils/dummyData";
+import TaskCard from "../components/TaskCard";
  
 export default function App() {
   return (
@@ -7,6 +9,15 @@ export default function App() {
         <Text>
             ProtoType 🚀
         </Text>
+        <FlatList
+          data={task}
+          keyExtractor={(item)=>item.id.toString()}
+          renderItem={({item})=>(
+            <TaskCard
+              title={item.title}
+            />
+          )}
+        />
     </View>
   );
 }
