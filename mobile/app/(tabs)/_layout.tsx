@@ -1,51 +1,58 @@
-import { tabs } from "@/constants/data";
 import { Tabs } from "expo-router";
-import { View } from "react-native";
-import clsx from 'clsx'
-import {Image} from 'expo-image'
-const TabLayout = () => {
+import { Ionicons } from "@expo/vector-icons";
 
-    const TabIcon= ({focused,icon}: TabIconProps) =>{
-        return(
-                <View
-                    className="tabs-icon"
-                >
-                    <View
-                        className={clsx('tabs-pill',focused &&'tabs-active')}
-                    >   
-                        <Image
-                            source={icon}
-                            className="tabs-glyph"
-                        />
-                    </View>
-                </View>
-        )
-    }
-
+export default function TabsLayout(){
     return (
         <Tabs
-            screenOptions={{ headerShown: false }}
-        >
-            {
-                tabs.map((tab) => (
-                    <Tabs.Screen
-                        key={tab.name}
-                        name={tab.name}
-                        options={{
-                             title: tab.title ,
-                            tabBarIcon:({focused})=>(
-                                <TabIcon
-                                    focused={focused}
-                                    icon={tab.icon }
-                                />
-                            )
-                        }}
-                    />
-                ))
-            }
+            screenOptions={{
+                headerShown:false,
+                tabBarActiveTintColor:"#3b82f6",
+                tabBarStyle:{
+                    backgroundColor:"#0f172a"
+                }
+            }}
+        >   
+
+            <Tabs.Screen
+                name="index"
+                options={{
+                    title:"Home",
+                    tabBarIcon:({color,size})=>{
+                        <Ionicons
+                            name="home"
+                            color={color}
+                            size={size}
+                        />
+                    }
+                }}
+            />
+            <Tabs.Screen
+                name="add"
+                options={{
+                    title:"Add",
+                    tabBarIcon:({color,size})=>{
+                        <Ionicons
+                            name="add-circle"
+                            color={color}
+                            size={size}
+                        />
+                    }
+                }}
+            />
+            <Tabs.Screen
+                name="profile"
+                options={{
+                    title:"Profile",
+                    tabBarIcon:({color,size})=>{
+                        <Ionicons
+                            name="person"
+                            color="white"
+                            size={size}
+                        />
+                    } 
+                }}
+            />
 
         </Tabs>
     )
 }
-
-export default TabLayout

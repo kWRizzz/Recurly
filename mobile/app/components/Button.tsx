@@ -1,12 +1,14 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const insights = () => {
+const Button = () => {
   return (
     <View>
-      <Text>insights</Text>
+      <Text>
+            button here
+      </Text>
     </View>
   )
 }
 
-export default insights
+export default Button
