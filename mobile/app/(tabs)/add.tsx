@@ -1,7 +1,9 @@
 import { View, Text, TextInput } from 'react-native'
-import React from 'react'
+import React, { useContext, useState } from 'react'
 
 const add = () => {
+    const [text, setText] = useState("")
+    
     return (
         <View
             className=' flex-1 justify-center items-center bg-slate-900'
