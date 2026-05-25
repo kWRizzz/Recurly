@@ -1,5 +1,9 @@
 # envoirment
 .env
 
-# modulles
-node_modules
+# dependencies
+node_modules/
+
+
+
+
