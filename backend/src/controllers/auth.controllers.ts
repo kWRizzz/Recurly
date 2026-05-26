@@ -73,7 +73,10 @@ export const lginUser = async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
-        const isCorrectPassword = await bcryptJS.compare(password, env.jwtSecrecet)
+        const isCorrectPassword = await bcryptJS.compare(
+            password,
+            user.password.toString()
+        );
 
         if (!isCorrectPassword) {
             res.status(400).json({
