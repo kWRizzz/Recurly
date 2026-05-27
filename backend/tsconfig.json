@@ -1,27 +1,21 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-
     "module": "CommonJS",
-
     "rootDir": "./src",
-
     "outDir": "./dist",
-
     "strict": true,
-
     "esModuleInterop": true,
-
     "skipLibCheck": true,
-
+   
     "forceConsistentCasingInFileNames": true
   },
-
-  "include": ["src"],
-  
-  "scripts": {
-    "dev": "ts-node-dev --respawn src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js"
-}
+  "include": [
+    "src"
+  ],
+  // "scripts": {
+  //   "dev": "ts-node-dev --respawn src/server.ts",
+  //   "build": "tsc",
+  //   "start": "node dist/server.js"
+  // }
 }

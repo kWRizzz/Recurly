@@ -1,4 +1,5 @@
 import { Response, Request } from "express"
+import { CustomRequest } from "../types"
 import bcryptJS from "bcryptjs"
 import { env } from "../config/env"
 
@@ -104,3 +105,22 @@ export const lginUser = async (req: Request, res: Response): Promise<void> => {
         })
     }
 }
+
+export const getUser = async (
+    req: CustomRequest,
+    res: Response
+): Promise<void> => {
+    try {
+        const user = req.user
+        res.status(200).json({
+            message:"user fetched",
+            user,
+            success: true,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server Error",
+        });
+    }
+};
