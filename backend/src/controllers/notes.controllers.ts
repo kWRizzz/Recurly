@@ -68,7 +68,6 @@ export const getNotes = async (
 
         res.status(200).json({
             success: true,
-
             notes,
         });
     } catch (error) {
@@ -94,7 +93,6 @@ export const deleteNote = async (
         if (!note) {
             res.status(404).json({
                 success: false,
-
                 message: "Note not found",
             });
 
@@ -103,7 +101,6 @@ export const deleteNote = async (
 
         res.status(200).json({
             success: true,
-
             message: "Note deleted",
         });
     } catch (error) {

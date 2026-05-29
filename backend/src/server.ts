@@ -5,6 +5,7 @@ import { connectDB } from "./config/db";
 // import cookieparser from "cookie-parser"
 
 import authRouter from "./routes/auth.routes"
+import notesRouter from "./routes/notes.routes"
 
 const app=express()
 
@@ -15,6 +16,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
 app.use('/api/user',authRouter)
+app.use('/api/notes',notesRouter)
 
 app.get("/dummy",(req,res)=>{
     res.send("raand ke madrchod")
