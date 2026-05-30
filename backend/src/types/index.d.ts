@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { IUser } from "../models/user.model";
-
+import {INote} from "../models/notes.model"
 // declare global {
 //     namespace Express {
 //         interface Request{
@@ -10,5 +10,6 @@ import { IUser } from "../models/user.model";
 // }
 
 export interface CustomRequest extends Request{
-    user?:IUser
+    user?:IUser,
+    file?: Express.Multer.File
 }

@@ -6,6 +6,7 @@ import { connectDB } from "./config/db";
 
 import authRouter from "./routes/auth.routes"
 import notesRouter from "./routes/notes.routes"
+import uploadRouter from "./routes/upload.route"
 
 const app=express()
 
@@ -17,6 +18,7 @@ app.use(express.urlencoded({extended:true}))
 
 app.use('/api/user',authRouter)
 app.use('/api/notes',notesRouter)
+app.use('/api/upload',uploadRouter)
 
 app.get("/dummy",(req,res)=>{
     res.send("raand ke madrchod")

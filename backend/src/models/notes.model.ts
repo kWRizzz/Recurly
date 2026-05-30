@@ -7,6 +7,8 @@ import mongoose,{
 export interface INote extends Document{
     title:string;
     content:string;
+    summary?:string;
+    fileUrl?:string;
     user:Types.ObjectId;
 }
 
@@ -20,6 +22,14 @@ const notesSchema= new Schema<INote>({
     content:{
         type:String,
         required:true
+    },
+    summary:{
+        type:String,
+        default:""
+    },
+    fileUrl:{
+        type:String,
+        default:""
     },
     user:{
         type:Schema.Types.ObjectId,
