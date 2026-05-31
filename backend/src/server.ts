@@ -7,6 +7,7 @@ import { connectDB } from "./config/db";
 import authRouter from "./routes/auth.routes"
 import notesRouter from "./routes/notes.routes"
 import uploadRouter from "./routes/upload.route"
+import processPdfRoute from "./routes/pdf.route"
 
 const app=express()
 
@@ -19,6 +20,7 @@ app.use(express.urlencoded({extended:true}))
 app.use('/api/user',authRouter)
 app.use('/api/notes',notesRouter)
 app.use('/api/upload',uploadRouter)
+app.use('/api/ai',processPdfRoute)
 
 app.get("/dummy",(req,res)=>{
     res.send("raand ke madrchod")

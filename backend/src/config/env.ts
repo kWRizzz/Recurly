@@ -6,5 +6,6 @@ dotenv.config()
 export const env={
     port: process.env.PORT || 3000,
     MONGODBURI: process.env.MONGODB_URI || "",
-    jwtSecrecet: process.env.JWT_SECRET || ""
+    jwtSecrecet: process.env.JWT_SECRET || "",
+    geminiApiKey:process.env.GEMINI_API_KEY || ""
 }
