@@ -27,7 +27,7 @@ const getQuize= async (
     } catch (error) {
         console.log(`cant generate quiz sorr :( ${error}`);
         res.status(500).json({
-            message:`cant gen quiz ${error}`,
+            message:`cant gen qunbbiz ${error}`,
             success:false
         })
     }
