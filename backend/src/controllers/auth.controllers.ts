@@ -14,7 +14,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 
         if (!name || !email || !password) {
             res.status(400).json({
-                message: "Enter All Credentials "
+                message: "Enter All fffCredentials "
             })
             return;
         }
