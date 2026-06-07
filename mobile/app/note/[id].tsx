@@ -1,12 +1,54 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import {
+  View,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 
-const NoteScreen = () => {
+export default function NoteDetail() {
   return (
-    <View className='flex-1 items-center justify-center bg-amber-700'>
-      <Text className='text-3xl font-bold text-white'>Note Screen</Text>
-    </View>
-  )
-}
+    <View className="flex-1 p-6">
+      <Text className="text-3xl font-bold">
+        Note Detail
+      </Text>
 
-export default NoteScreen
+      <TouchableOpacity
+        className="
+          bg-blue-500
+          p-4
+          rounded-xl
+          mt-6
+        "
+      >
+        <Text className="text-white text-center">
+          View Summary
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        className="
+          bg-green-500
+          p-4
+          rounded-xl
+          mt-4
+        "
+      >
+        <Text className="text-white text-center">
+          Generate Quiz
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        className="
+          bg-purple-500
+          p-4
+          rounded-xl
+          mt-4
+        "
+      >
+        <Text className="text-white text-center">
+          Chat With Notes
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}

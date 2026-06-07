@@ -1,6 +1,15 @@
 // import * as FileSystem from "expo-file-system";
 // for future use 
 import { api } from "./api";
+import{
+    Note
+} from "../types/note.types"
+
+
+export const getNotes= async ():Promise<Note[]> => {
+    const response= await api.get("/notes")
+    return response.data.notes;
+}
 
 export const uploadPdf = async (
     file:{
