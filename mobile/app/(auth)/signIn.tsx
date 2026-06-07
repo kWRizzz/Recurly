@@ -5,7 +5,7 @@ import {
 }
   from 'react-native'
 import React from 'react'
-import { Link } from 'expo-router'
+import { Link, Redirect } from 'expo-router'
 import {
   Controller,
   useForm
@@ -18,8 +18,14 @@ import {
   registerFormData,
   registerSchema
 } from '@/src/validation/auth.validation'
+import { userAuthStore } from '@/src/store/auth.store'
 
 const signIn = () => {
+  const isAuthenticated = userAuthStore((state) => state.isAuthenticated);
+
+  if (isAuthenticated) {
+    return <Redirect href="/(tabs)" />;
+  }
 
   const {
     control,

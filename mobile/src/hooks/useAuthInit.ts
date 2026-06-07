@@ -11,25 +11,25 @@ import{
 export const useAuthInit =()=>{
     const setAuth= userAuthStore((state)=>state.setAuth)
 
-    const setLoading= userAuthStore((state)=>state.isLoading)
+    const setLoading = userAuthStore((state) => state.setLoading)
 
     useEffect(() => {
         
-        const init= async () => {
-            try{
+        const init = async () => {
+            try {
                 const token = await getToken();
-                const user= await getUser();
+                const user = await getUser();
 
-                if(
+                if (
                     token && user
-                ){
+                ) {
                     setAuth(
                         token,
                         user
                     )
                 }
-            }finally {
-                setLoading:false // need future changement setLoading()
+            } finally {
+                setLoading(false)
             }
         }
         

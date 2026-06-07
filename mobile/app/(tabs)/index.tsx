@@ -1,7 +1,7 @@
 import { Link } from "expo-router";
 import { FlatList, Text, View } from "react-native";
-import { task } from "../utils/dummyData";
-import TaskCard from "../components/TaskCard";
+import { task } from "@/src/utils/dummyData";
+import TaskCard from "@/src/components/TaskCard";
 
 export default function App() {
   return (
