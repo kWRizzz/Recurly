@@ -159,6 +159,12 @@ const signUp = () => {
       >
         Don't have an account?
       </Link>
+      <Link
+        href="/(tabs)/upload"
+        className="text-center mt-6"
+      >
+        Don't have an account?
+      </Link>
     </View>
   )
 }
