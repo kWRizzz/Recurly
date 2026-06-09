@@ -52,7 +52,7 @@ export const getNotes = async (
     res: Response
 ): Promise<void> => {
     try {
-        if (req.user?._id) {
+        if (!req.user?._id) {
             res.status(400).json({
                 message: "no user found while fetching the notes",
                 success: false
@@ -86,7 +86,7 @@ export const deleteNote = async (
 ): Promise<void> => {
     try {
         const note = await notesModel.findOneAndDelete({
-            _id: req.params._id,
+            _id: req.params.id,
             user: req.user?._id
         })
 
@@ -109,5 +109,40 @@ export const deleteNote = async (
             success: false,
             message: `cant del note ${error}`,
         });
+    }
+}
+
+
+export const getNotesById= async (
+    req:CustomRequest,
+    res:Response
+):Promise<void> => {
+    try {
+        
+        const notes= await notesModel.findOne({
+            _id:req.params.id,
+            user:req.user?._id
+        })
+
+        if(!notes){
+            res.status(400).json({
+                message:"no nots found",
+                success:false
+            });
+            return;
+        }
+
+         res.status(200).json({
+            success: true,
+            notes
+        });
+
+
+    } catch (error) {
+        console.log(`error occured your notes not found ${error}`);
+        res.status(500).json({
+            message:` no notes found of user ${error}`,
+            success:false
+        })
     }
 }

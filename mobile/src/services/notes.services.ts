@@ -40,3 +40,13 @@ export const uploadPdf = async (
 
     return response.data
 }
+
+export const getNotesById= async (
+    id:string
+) => {
+    const respone= await api.get(
+        `/note/${id}`
+    )
+
+    return respone.data.note    
+}

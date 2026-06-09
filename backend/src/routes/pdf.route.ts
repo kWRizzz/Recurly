@@ -7,14 +7,14 @@ import { processPdf } from "../controllers/pdf.controllers"
 import {
     uploads
 } from "../middleware/multer"
-import{
+import {
     chatWithNotes,
     getQuize
 } from "../controllers/ai.controllers"
 
-const router= Router()
+const router = Router()
 
-router.post("/pdfupload",protect,uploads.single("pdf"),processPdf)
+router.post("/pdfupload", protect, uploads.single("pdf"), processPdf)
 
 router.post(
     "/quiz/:noteId",
