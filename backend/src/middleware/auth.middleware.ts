@@ -23,7 +23,7 @@ export const protect = async (
 
         if(!authHeader || !authHeader.startsWith("Bearer ")){
             res.status(401).json({
-                message:"No token header Found pls try to re register or re login ",
+                message:"No token sexy  header Found pls try to re register or re login ",
                 success:false
             });
             return;

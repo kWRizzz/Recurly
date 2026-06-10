@@ -66,7 +66,7 @@ Answer ONLY from the notes below.
 
 If answer is not present say:
 
-"I couldn't find that in your notes."
+"I couldn't find that in your  notes."
 
 NOTES:
 
