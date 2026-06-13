@@ -1,10 +1,18 @@
 import {
+  router,
+  useLocalSearchParams
+} from "expo-router";
+import {
   View,
   Text,
   TouchableOpacity,
 } from "react-native";
 
+
 export default function NoteDetail() {
+
+  const { id } = useLocalSearchParams()
+
   return (
     <View className="flex-1 p-6">
       <Text className="text-3xl font-bold">
@@ -32,7 +40,14 @@ export default function NoteDetail() {
           mt-4
         "
       >
-        <Text className="text-white text-center">
+        <Text
+          className="text-white text-center"
+          onPress={
+            () => router.push(
+              `/quiz/${id}`
+            )
+          }
+        >
           Generate Quiz
         </Text>
       </TouchableOpacity>
@@ -45,7 +60,14 @@ export default function NoteDetail() {
           mt-4
         "
       >
-        <Text className="text-white text-center">
+        <Text
+          className="text-white text-center"
+          onPress={() =>
+            router.push(
+              `/chat/${id}`
+            )
+          }
+        >
           Chat With Notes
         </Text>
       </TouchableOpacity>
