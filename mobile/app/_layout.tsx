@@ -8,6 +8,7 @@ import {
 import {
   userAuthStore
 } from "@/src/store/auth.store"
+import { ActivityIndicator, View } from "react-native";
 
 
 export default function RootLayout() {
@@ -17,14 +18,26 @@ export default function RootLayout() {
     (state) => state.isLoading
   )
 
-  if(isLoading){
-    return null;
+  if (isLoading) {
+    return (
+      <View
+        className="
+        flex-1
+        justify-center
+        items-center
+      "
+      >
+        <ActivityIndicator
+          size="large"
+        />
+      </View>
+    );
   }
 
   return <>
     <Stack
       screenOptions={{
-        headerShown:false
+        headerShown: false
       }}
     />
   </>

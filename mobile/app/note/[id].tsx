@@ -24,8 +24,8 @@ export default function NoteDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    
-    const fetchNotes= async () => {
+
+    const fetchNotes = async () => {
       try {
         const data = await getNotesById(
           id as string
@@ -33,28 +33,45 @@ export default function NoteDetail() {
         setNote(data)
       } catch (error) {
         console.log(" error in fetching the notes" + error);
-      }finally{
+      } finally {
         setLoading(false)
       }
     }
     fetchNotes()
-    
+
   }, [])
-  
+
   if (loading) {
-  return (
-    <Text>
-      Loading...
-    </Text>
-  );
-}
+    return (
+      <Text>
+        Loading...
+      </Text>
+    );
+  }
 
   return (
     <View className="flex-1 p-6">
       <Text className="text-3xl font-bold">
-        Note Detail
+        {note?.title}
       </Text>
 
+      <View
+        className="
+    bg-gray-100
+    p-4
+    rounded-xl
+    mt-6
+  "
+      >
+        <Text className="text-lg font-semibold mb-2">
+          Summary
+        </Text>
+
+        <Text>
+          {note?.summary ||
+            "No summary available"}
+        </Text>
+      </View>
       <TouchableOpacity
         className="
           bg-blue-500
@@ -69,6 +86,11 @@ export default function NoteDetail() {
       </TouchableOpacity>
 
       <TouchableOpacity
+        onPress={
+          ()=>router.push(
+            `/quiz/${id}`
+          )
+        }
         className="
           bg-green-500
           p-4
@@ -78,17 +100,15 @@ export default function NoteDetail() {
       >
         <Text
           className="text-white text-center"
-          onPress={
-            () => router.push(
-              `/quiz/${id}`
-            )
-          }
         >
           Generate Quiz
         </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
+        onPress={()=>router.push(
+          `/chat/${id}`
+        )}
         className="
           bg-purple-500
           p-4
@@ -98,11 +118,6 @@ export default function NoteDetail() {
       >
         <Text
           className="text-white text-center"
-          onPress={() =>
-            router.push(
-              `/chat/${id}`
-            )
-          }
         >
           Chat With Notes
         </Text>
