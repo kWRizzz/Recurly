@@ -5,6 +5,7 @@ import {
 import { 
     QuizQuestion
  } from "../types/quiz.types";
+import { Flashcard } from "../types/flashcards.types";
 
 export const askQuestion= async (
     notesId:string,
@@ -28,4 +29,13 @@ export const generateQuiz = async (
     return JSON.parse(
         response.data.quiz
     )
+}
+
+export const generateFlashcards = async (
+    noteId: string
+): Promise<Flashcard[]> => {
+    const response = await api.post(
+        `/ai/flashcards/${noteId}`
+    );
+    return response.data.flashcards;
 }

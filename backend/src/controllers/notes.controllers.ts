@@ -3,6 +3,7 @@ import {
 } from "express"
 import { CustomRequest } from "../types"
 import notesModel from "../models/notes.model"
+import quizHistoryModel from "../models/quizHistory.model"
 
 
 export const createNotes = async (
@@ -144,5 +145,63 @@ export const getNotesById= async (
             message:` no notes found of user ${error}`,
             success:false
         })
+    }
+}
+
+export const createQuizHistory = async (
+    req: CustomRequest,
+    res: Response
+): Promise<void> => {
+    try {
+        const { noteId, noteTitle, score, totalQuestions } = req.body;
+        if (!noteId || !noteTitle || score === undefined || !totalQuestions) {
+            res.status(400).json({
+                message: "Missing quiz history fields",
+                success: false
+            });
+            return;
+        }
+
+        const quizHistory = await quizHistoryModel.create({
+            user: req.user?._id,
+            note: noteId,
+            noteTitle,
+            score,
+            totalQuestions
+        });
+
+        res.status(201).json({
+            message: "Quiz history saved",
+            success: true,
+            quizHistory
+        });
+    } catch (error) {
+        console.log(`error saving quiz history ${error}`);
+        res.status(500).json({
+            message: `cant save quiz history ${error}`,
+            success: false
+        });
+    }
+}
+
+export const getQuizHistory = async (
+    req: CustomRequest,
+    res: Response
+): Promise<void> => {
+    try {
+        const history = await quizHistoryModel.find({
+            user: req.user?._id
+        }).sort({ createdAt: -1 });
+
+        res.status(200).json({
+            success: true,
+            history
+        });
+    } catch (error) {
+        console.log(`error getting quiz history ${error}`);
+        res.status(500).json({
+            message: `cant get quiz history ${error}`,
+            success: false
+        });
     }
 }

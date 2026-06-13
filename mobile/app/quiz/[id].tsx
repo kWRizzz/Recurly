@@ -10,6 +10,8 @@ import { generateQuiz } from "@/src/services/ai.services";
 import { QuizQuestion } from "@/src/types/quiz.types";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { getNotesById, saveQuizAttempt } from "@/src/services/notes.services";
+import * as Haptics from "expo-haptics";
 
 const QuizScreen = () => {
   const { id } = useLocalSearchParams();
@@ -18,6 +20,7 @@ const QuizScreen = () => {
   const [score, setScore] = useState<number | null>(null);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [noteTitle, setNoteTitle] = useState("Practice Quiz");
 
   useEffect(() => {
     const load = async () => {
@@ -25,6 +28,11 @@ const QuizScreen = () => {
         setLoading(true);
         const data = await generateQuiz(id as string);
         setQuestions(data || []);
+
+        const noteData = await getNotesById(id as string);
+        if (noteData && noteData.title) {
+          setNoteTitle(noteData.title);
+        }
       } catch (error) {
         console.log("Error loading quiz:", error);
       } finally {
@@ -32,9 +40,9 @@ const QuizScreen = () => {
       }
     }
     load()
-  }, [])
+  }, [id])
 
-  const submitQuiz = () => {
+  const submitQuiz = async () => {
     if (Object.keys(answers).length < questions.length && !submitted) {
       alert("Please answer all questions before submitting!");
       return;
@@ -46,16 +54,43 @@ const QuizScreen = () => {
         correct++;
       }
     });
+
     setScore(correct);
     setSubmitted(true);
+
+    // Play tactile notification feedback
+    if (correct === questions.length) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } else {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+
+    try {
+      await saveQuizAttempt({
+        noteId: id as string,
+        noteTitle,
+        score: correct,
+        totalQuestions: questions.length
+      });
+    } catch (error) {
+      console.log("Error saving quiz score:", error);
+    }
   }
 
   const handleSelectOption = (qIndex: number, option: string) => {
     if (submitted) return; // Disable selection after submit
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setAnswers(prev => ({
       ...prev,
       [qIndex]: option
     }));
+  };
+
+  const handleReattempt = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setAnswers({});
+    setScore(null);
+    setSubmitted(false);
   };
 
   const getOptionStyle = (qIndex: number, option: string, correctAnswer: string) => {
@@ -148,6 +183,20 @@ const QuizScreen = () => {
               </TouchableOpacity>
             )
           })}
+
+          {submitted && (
+            <View className="mt-3 p-3 rounded-xl bg-zinc-900 border border-zinc-850">
+              {answers[qIndex] === question.answer ? (
+                <Text className="text-emerald-400 font-semibold text-sm">
+                  ✓ Correct!
+                </Text>
+              ) : (
+                <Text className="text-rose-400 font-medium text-sm">
+                  ✗ Incorrect. Correct: <Text className="font-bold text-emerald-400">{question.answer}</Text>
+                </Text>
+              )}
+            </View>
+          )}
         </View>
       ))}
 
@@ -174,12 +223,21 @@ const QuizScreen = () => {
               : "Review your study materials and take the quiz again to improve. 📚"}
           </Text>
 
-          <TouchableOpacity
-            onPress={() => router.back()}
-            className="bg-zinc-800 border border-zinc-700 px-6 py-3 rounded-xl mt-6 active:bg-zinc-700"
-          >
-            <Text className="text-zinc-300 font-semibold text-base">Back to Note</Text>
-          </TouchableOpacity>
+          <View className="flex-row mt-6 w-full justify-between">
+            <TouchableOpacity
+              onPress={handleReattempt}
+              className="bg-violet-600 px-4 py-3 rounded-xl active:bg-violet-700 flex-1 mr-2"
+            >
+              <Text className="text-white font-bold text-center text-base">Re-attempt</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => router.back()}
+              className="bg-zinc-800 border border-zinc-700 px-4 py-3 rounded-xl active:bg-zinc-700 flex-1 ml-2"
+            >
+              <Text className="text-zinc-300 font-semibold text-center text-base">Back to Note</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
     </ScrollView>

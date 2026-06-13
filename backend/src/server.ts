@@ -28,7 +28,7 @@ app.get("/dummy",(req,res)=>{
 
 const startServer = async () => {
     await connectDB()
-    app.listen(env.port, () => {
+    app.listen(Number(env.port), "0.0.0.0", () => {
     console.log(`Server running on port ${env.port}`);
   });
 }

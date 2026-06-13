@@ -53,6 +53,37 @@ ${text}
     return cleaned
 }
 
+export const generateFlashcards = async (
+    text: string
+): Promise<string> => {
+    const respone = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents:
+            `
+            Generate 5 to 10 study flashcards from the notes below. Each flashcard must have a concise 'front' (question/concept) and a 'back' (answer/definition).
+
+Return ONLY valid JSON.
+
+Format:
+
+[
+ {
+   "front":"...",
+   "back":"..."
+ }
+]
+
+Notes:
+
+${text}
+        `
+    })
+
+    const rawText = respone.text || ""
+    const cleaned = rawText.replace(/```json/gi, "").replace(/```/g, "").trim()
+    return cleaned
+}
+
 
 export const askQuestion = async (
     notes: string,

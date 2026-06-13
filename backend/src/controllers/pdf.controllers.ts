@@ -1,3 +1,4 @@
+import { PDFParse } from "pdf-parse"
 import fs from "fs"
 import {
     Response
@@ -9,8 +10,6 @@ import notesModel from "../models/notes.model"
 import {
     generateSummary
 } from "../services/gemini.service"
-
-const pdf = require("pdf-parse")
 
 
 
@@ -30,7 +29,8 @@ export const processPdf = async (
             req.file.path
         )
 
-        const pdfContent = await pdf(dataBuffer)
+        const parser = new PDFParse({ data: new Uint8Array(dataBuffer) })
+        const pdfContent = await parser.getText()
         const extract = pdfContent.text
 
         const summary = await generateSummary(extract.toString());

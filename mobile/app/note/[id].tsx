@@ -109,6 +109,16 @@ export default function NoteDetail() {
       {/* Action Buttons */}
       <View className="mt-8 mb-12">
         <TouchableOpacity
+          onPress={() => router.push(`/flashcard/${id}` as any)}
+          className="bg-indigo-600 p-4 rounded-xl active:bg-indigo-700 flex-row justify-center items-center mb-4"
+        >
+          <Ionicons name="albums" size={20} color="white" className="mr-2" />
+          <Text className="text-white text-center font-bold text-lg">
+            Practice Flashcards
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           onPress={() => router.push(`/quiz/${id}`)}
           className="bg-emerald-600 p-4 rounded-xl active:bg-emerald-700 flex-row justify-center items-center mb-4"
         >

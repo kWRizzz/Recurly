@@ -10,6 +10,10 @@ export interface INote extends Document{
     summary?:string;
     fileUrl?:string;
     user:Types.ObjectId;
+    flashcards?: {
+        front: string;
+        back: string;
+    }[];
 }
 
 
@@ -31,6 +35,12 @@ const notesSchema= new Schema<INote>({
         type:String,
         default:""
     },
+    flashcards: [
+        {
+            front: { type: String, required: true },
+            back: { type: String, required: true }
+        }
+    ],
     user:{
         type:Schema.Types.ObjectId,
         ref:"User",

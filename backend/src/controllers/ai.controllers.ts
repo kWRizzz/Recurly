@@ -5,7 +5,7 @@ import {
     CustomRequest
 } from "../types/index"
 import notesModel from "../models/notes.model"
-import { askQuestion, generateQuiz } from "../services/gemini.service"
+import { askQuestion, generateQuiz, generateFlashcards } from "../services/gemini.service"
 
 
 export const getQuize = async (
@@ -79,6 +79,54 @@ export const chatWithNotes = async (
         console.log(`some error occured in talking ${error}`);
         res.status(500).json({
             message: `some error occured in talking ${error}`,
+            success: false
+        })
+    }
+}
+
+export const getFlashcards = async (
+    req: CustomRequest,
+    res: Response
+): Promise<void> => {
+    try {
+        const note = await notesModel.findOne({
+            _id: req.params.noteId,
+            user: req.user?._id
+        })
+
+        if (!note) {
+            res.status(404).json({
+                message: "Note not found",
+                success: false
+            });
+            return;
+        }
+
+        // If flashcards already exist, return them
+        if (note.flashcards && note.flashcards.length > 0) {
+            res.status(200).json({
+                message: "Flashcards loaded",
+                success: true,
+                flashcards: note.flashcards
+            });
+            return;
+        }
+
+        const rawFlashcards = await generateFlashcards(note.content);
+        const flashcards = JSON.parse(rawFlashcards);
+
+        note.flashcards = flashcards;
+        await note.save();
+
+        res.status(200).json({
+            message: "Flashcards generated",
+            success: true,
+            flashcards
+        });
+    } catch (error) {
+        console.log(`cant generate flashcards ${error}`);
+        res.status(500).json({
+            message: `cant gen flashcards ${error}`,
             success: false
         })
     }

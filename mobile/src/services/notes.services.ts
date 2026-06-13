@@ -30,7 +30,12 @@ export const uploadPdf = async (
     )
 
     const response = await api.post("/ai/pdfupload",
-        formData
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }
     )
 
     return response.data
@@ -54,4 +59,19 @@ export const deleteNote= async (
     )
 
     return respone.data
+}
+
+export const saveQuizAttempt = async (attempt: {
+    noteId: string;
+    noteTitle: string;
+    score: number;
+    totalQuestions: number;
+}) => {
+    const response = await api.post("/notes/quiz-history", attempt);
+    return response.data;
+}
+
+export const getQuizHistory = async () => {
+    const response = await api.get("/notes/quiz-history");
+    return response.data.history;
 }
