@@ -23,10 +23,6 @@ import { userAuthStore } from '@/src/store/auth.store'
 const signIn = () => {
   const isAuthenticated = userAuthStore((state) => state.isAuthenticated);
 
-  if (isAuthenticated) {
-    return <Redirect href="/(tabs)" />;
-  }
-
   const {
     control,
     handleSubmit,
@@ -34,6 +30,10 @@ const signIn = () => {
   } = useForm<registerFormData>({
     resolver: zodResolver(registerSchema)
   })
+
+  if (isAuthenticated) {
+    return <Redirect href="/(tabs)" />;
+  }
 
   const onSubmit = (
     data: registerFormData

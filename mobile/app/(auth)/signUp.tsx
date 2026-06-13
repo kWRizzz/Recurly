@@ -36,11 +36,6 @@ import {
 
 const signUp = () => {
   const isAuthenticated = userAuthStore((state) => state.isAuthenticated);
-
-  if (isAuthenticated) {
-    return <Redirect href="/(tabs)" />;
-  }
-
   const setAuth = userAuthStore((state) => state.setAuth);
 
   const {
@@ -50,6 +45,10 @@ const signUp = () => {
   } = useForm<loginFromData>({
     resolver: zodResolver(loginSchema)
   });
+
+  if (isAuthenticated) {
+    return <Redirect href="/(tabs)" />;
+  }
 
   // handle the submit login feature 
   const onSubmit = async (
@@ -159,12 +158,12 @@ const signUp = () => {
       >
         Don't have an account?
       </Link>
-      <Link
+      {/* <Link
         href="/(tabs)/upload"
         className="text-center mt-6"
       >
         Don't have an account?
-      </Link>
+      </Link> */}
     </View>
   )
 }

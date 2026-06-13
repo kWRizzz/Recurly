@@ -29,13 +29,8 @@ export const uploadPdf = async (
         } as any 
     )
 
-    const response = await api.post("",
-        formData,
-        {
-            headers:{
-                "Content-Type":"multipart/form-data"
-            }
-        }
+    const response = await api.post("/ai/pdfupload",
+        formData
     )
 
     return response.data
@@ -45,7 +40,7 @@ export const getNotesById= async (
     id:string
 ) => {
     const respone= await api.get(
-        `/note/${id}`
+        `/notes/${id}`
     )
 
     return respone.data.note    
