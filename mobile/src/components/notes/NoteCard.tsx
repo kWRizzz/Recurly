@@ -23,16 +23,17 @@ const NoteCard = ({
     return (
         <TouchableOpacity
             onPress={onPress}
-            className=' bg-white p-4 rounded-xl mb-5 border border-gray-200'
+            className=' bg-[#18181b] p-5 rounded-2xl mb-4 border border-zinc-800/80 active:bg-zinc-800'
         >
             <Text
-                className=' text-lg font-semibold'
+                className=' text-lg font-semibold text-zinc-100'
+                numberOfLines={1}
             >
                 {note.title}
             </Text>
 
             <Text
-                className="text-gray-500 mt-2"
+                className="text-zinc-400 mt-2 text-sm leading-relaxed"
                 numberOfLines={2}
             >
                 {note.summary ||

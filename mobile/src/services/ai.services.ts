@@ -12,7 +12,7 @@ export const askQuestion= async (
 ) => {
     const response= await api.post(
         `/ai/chat/${notesId}`,
-        question  
+        { question }  
     ) 
     
     return response.data.answer;
@@ -20,7 +20,7 @@ export const askQuestion= async (
 
 export const generateQuiz = async (
     noteId:string
-):Promise<QuizQuestion> => {
+):Promise<QuizQuestion[]> => {
     const response= await api.post(
         `/ai/quiz/${noteId}`
     );

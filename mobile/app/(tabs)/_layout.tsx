@@ -6,16 +6,22 @@ export default function TabsLayout(){
     const isAuthenticated = userAuthStore((state) => state.isAuthenticated);
 
     if (!isAuthenticated) {
-        return <Redirect href="/(auth)/signUp" />;
+        return <Redirect href="/(auth)/signIn" />;
     }
 
     return (
         <Tabs
             screenOptions={{
                 headerShown:false,
-                tabBarActiveTintColor:"#3b82f6",
+                tabBarActiveTintColor:"#a78bfa",
+                tabBarInactiveTintColor:"#71717a",
                 tabBarStyle:{
-                    backgroundColor:"#0f172a"
+                    backgroundColor:"#18181b",
+                    borderTopWidth: 1,
+                    borderTopColor: "#27272a",
+                    paddingBottom: 5,
+                    paddingTop: 5,
+                    height: 60
                 }
             }}
         >   

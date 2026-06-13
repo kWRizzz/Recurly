@@ -48,7 +48,9 @@ ${text}
         `
     })
 
-    return respone.text || ""
+    const rawText = respone.text || ""
+    const cleaned = rawText.replace(/```json/gi, "").replace(/```/g, "").trim()
+    return cleaned
 }
 
 

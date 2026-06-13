@@ -15,7 +15,7 @@ export const uploadPdf = async (
     file:{
         uri:string,
         name:string,
-        mimiType?:string
+        mimeType?:string
     }
 ) => {
     const formData= new FormData()
@@ -25,7 +25,7 @@ export const uploadPdf = async (
         {
             uri:file.uri,
             name:file.name,
-            type:file.mimiType || "application/pdf" 
+            type:file.mimeType || "application/pdf" 
         } as any 
     )
 

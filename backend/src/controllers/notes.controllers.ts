@@ -119,14 +119,14 @@ export const getNotesById= async (
 ):Promise<void> => {
     try {
         
-        const notes= await notesModel.findOne({
+        const note= await notesModel.findOne({
             _id:req.params.id,
             user:req.user?._id
         })
 
-        if(!notes){
+        if(!note){
             res.status(400).json({
-                message:"no nots found",
+                message:"no notes found",
                 success:false
             });
             return;
@@ -134,7 +134,7 @@ export const getNotesById= async (
 
          res.status(200).json({
             success: true,
-            notes
+            note
         });
 
 

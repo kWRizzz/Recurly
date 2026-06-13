@@ -6,185 +6,138 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Alert
+  Alert,
+  ScrollView,
+  ActivityIndicator
 } from "react-native";
-
-import {
-  Note
-} from "@/src/types/note.types";
-import {
-  getNotesById
-} from "@/src/services/notes.services";
+import { Note } from "@/src/types/note.types";
+import { getNotesById, deleteNote } from "@/src/services/notes.services";
 import { useEffect, useState } from "react";
-
-import {
-  deleteNote
-} from "@/src/services/notes.services";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function NoteDetail() {
-
   const { id } = useLocalSearchParams()
-
   const [note, setNote] = useState<Note | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showFullContent, setShowFullContent] = useState(false);
 
   useEffect(() => {
-
     const fetchNotes = async () => {
       try {
-        const data = await getNotesById(
-          id as string
-        )
+        const data = await getNotesById(id as string)
         setNote(data)
       } catch (error) {
-        console.log(" error in fetching the notes" + error);
+        console.log("error in fetching notes: " + error);
       } finally {
         setLoading(false)
       }
     }
     fetchNotes()
-
   }, [])
 
-  const handleDelete =
-    async () => {
-
-      Alert.alert(
-        "Delete Note",
-        "Are you sure?",
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
+  const handleDelete = async () => {
+    Alert.alert(
+      "Delete Note",
+      "Are you sure you want to delete this study material?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteNote(id as string);
+              router.back();
+            } catch (error) {
+              console.log(error);
+            }
           },
-          {
-            text: "Delete",
-
-            style: "destructive",
-
-            onPress: async () => {
-
-              try {
-
-                await deleteNote(
-                  id as string
-                );
-
-                router.back();
-
-              } catch (error) {
-
-                console.log(error);
-
-              }
-
-            },
-          },
-        ]
-      );
-
-    };
+        },
+      ]
+    );
+  };
 
   if (loading) {
     return (
-      <Text>
-        Loading...
-      </Text>
+      <View className="flex-1 bg-[#09090b] justify-center items-center">
+        <ActivityIndicator size="large" color="#a78bfa" />
+        <Text className="text-zinc-500 mt-4 font-medium">Loading details...</Text>
+      </View>
     );
   }
 
   return (
-    <View className="flex-1 p-6">
-      <Text className="text-3xl font-bold">
+    <ScrollView className="flex-1 bg-[#09090b] px-6 pt-12" showsVerticalScrollIndicator={false}>
+      {/* Header Bar */}
+      <View className="flex-row items-center mb-6">
+        <TouchableOpacity onPress={() => router.back()} className="bg-[#18181b] border border-zinc-800 p-2.5 rounded-full mr-4 active:bg-zinc-800">
+          <Ionicons name="arrow-back" size={20} color="#f4f4f5" />
+        </TouchableOpacity>
+        <Text className="text-zinc-300 font-semibold text-lg">Back to Notes</Text>
+      </View>
+
+      <Text className="text-3xl font-extrabold text-zinc-50 leading-tight">
         {note?.title}
       </Text>
 
-      <View
-        className="
-    bg-gray-100
-    p-4
-    rounded-xl
-    mt-6
-  "
-      >
-        <Text className="text-lg font-semibold mb-2">
-          Summary
+      {/* Content Card */}
+      <View className="bg-[#18181b] border border-zinc-800/80 p-5 rounded-2xl mt-6">
+        <Text className="text-lg font-bold text-zinc-100 mb-3">
+          {showFullContent ? "Full Extracted Content" : "AI-Generated Summary"}
         </Text>
 
-        <Text>
-          {note?.summary ||
-            "No summary available"}
+        <Text className="text-zinc-400 text-base leading-relaxed">
+          {showFullContent
+            ? (note?.content || "No content available")
+            : (note?.summary || "No summary available")}
         </Text>
       </View>
+
+      {/* Toggle View Mode */}
       <TouchableOpacity
-        className="
-          bg-blue-500
-          p-4
-          rounded-xl
-          mt-6
-        "
+        onPress={() => setShowFullContent(!showFullContent)}
+        className="bg-zinc-900 border border-zinc-800 p-4 rounded-xl mt-6 active:bg-zinc-800"
       >
-        <Text className="text-white text-center">
-          View Summary
+        <Text className="text-zinc-300 text-center font-semibold">
+          {showFullContent ? "View AI Summary" : "View Full Content"}
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={
-          () => router.push(
-            `/quiz/${id}`
-          )
-        }
-        className="
-          bg-green-500
-          p-4
-          rounded-xl
-          mt-4
-        "
-      >
-        <Text
-          className="text-white text-center"
+      {/* Action Buttons */}
+      <View className="mt-8 mb-12">
+        <TouchableOpacity
+          onPress={() => router.push(`/quiz/${id}`)}
+          className="bg-emerald-600 p-4 rounded-xl active:bg-emerald-700 flex-row justify-center items-center mb-4"
         >
-          Generate Quiz
-        </Text>
-      </TouchableOpacity>
+          <Ionicons name="school" size={20} color="white" className="mr-2" />
+          <Text className="text-white text-center font-bold text-lg">
+            Generate Quiz
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={() => router.push(
-          `/chat/${id}`
-        )}
-        className="
-          bg-purple-500
-          p-4
-          rounded-xl
-          mt-4
-        "
-      >
-        <Text
-          className="text-white text-center"
+        <TouchableOpacity
+          onPress={() => router.push(`/chat/${id}`)}
+          className="bg-violet-600 p-4 rounded-xl active:bg-violet-700 flex-row justify-center items-center mb-4"
         >
-          Chat With Notes
-        </Text>
-      </TouchableOpacity>
+          <Ionicons name="chatbubbles" size={20} color="white" className="mr-2" />
+          <Text className="text-white text-center font-bold text-lg">
+            Chat With Notes
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={handleDelete}
-        className="
-    bg-red-500
-    p-4
-    rounded-xl
-    mt-4
-  "
-      >
-        <Text
-          className="
-      text-white
-      text-center
-    "
+        <TouchableOpacity
+          onPress={handleDelete}
+          className="bg-rose-950/20 border border-rose-900/40 p-4 rounded-xl active:bg-rose-950/40 flex-row justify-center items-center"
         >
-          Delete Note
-        </Text>
-      </TouchableOpacity>
-    </View>
+          <Ionicons name="trash" size={20} color="#f43f5e" className="mr-2" />
+          <Text className="text-rose-400 text-center font-bold text-lg">
+            Delete Note
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 }

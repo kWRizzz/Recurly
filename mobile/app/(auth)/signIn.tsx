@@ -2,98 +2,88 @@ import {
   View,
   Text,
   TouchableOpacity
-}
-  from 'react-native'
-import React from 'react'
-import { Link, Redirect } from 'expo-router'
-import {
-  Controller,
-  useForm
-} from "react-hook-form"
-import {
-  zodResolver
-} from "@hookform/resolvers/zod"
+} from 'react-native'
+import React, { useState } from 'react'
+import { Link, Redirect, router } from 'expo-router'
+import { Controller, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import AppGUI from '@/src/components/ui/AppGUI'
 import {
-  registerFormData,
-  registerSchema
+  loginFromData,
+  loginSchema
 } from '@/src/validation/auth.validation'
 import { userAuthStore } from '@/src/store/auth.store'
+import { loginUser } from '@/src/services/auth.services'
+import { setAuthData } from '@/src/utils/storage.helper'
 
-const signIn = () => {
+const SignInScreen = () => {
   const isAuthenticated = userAuthStore((state) => state.isAuthenticated);
+  const setAuth = userAuthStore((state) => state.setAuth);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<registerFormData>({
-    resolver: zodResolver(registerSchema)
+  } = useForm<loginFromData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: ""
+    }
   })
 
   if (isAuthenticated) {
     return <Redirect href="/(tabs)" />;
   }
 
-  const onSubmit = (
-    data: registerFormData
-  ) => {
-    console.log(data);
+  const onSubmit = async (data: loginFromData) => {
+    try {
+      setSubmitting(true);
+      setErrorMsg("");
+      const response = await loginUser(data.email, data.password);
+      
+      // Store locally
+      await setAuthData(response.token, response.user);
+      
+      // Set Zustand state
+      setAuth(response.token, response.user);
+
+      router.replace("/(tabs)");
+    } catch (error: any) {
+      console.log(error);
+      setErrorMsg(error?.response?.data?.message || 'Invalid email or password');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
-
   return (
-    <View
-      className=' flex-1 justify-center px-6 bg-white'
-    >
-      <Text
-        className=' text-4xl font-bold mb-2'
-      >
-        Create Account
+    <View className='flex-1 justify-center px-6 bg-[#09090b]'>
+      <Text className='text-4xl font-bold mb-2 text-zinc-50'>
+        Welcome Back
       </Text>
-      <Text
-        className=' text-gray-500 mb-8 '
-      >
-        Register to continue
+      
+      <Text className='text-zinc-400 mb-8 font-medium'>
+        Login to continue your learning journey
       </Text>
 
-      <Controller
-        control={control}
-        name='name'
-        render={({
-          field: {
-            onChange,
-            value
-          }
-        }) => (
-          <AppGUI
-            placeholder="Name"
-            value={value}
-            onChangeText={onChange}
-            error={
-              errors?.name?.message
-            }
-
-          />
-        )}
-      />
+      {errorMsg ? (
+        <Text className="text-rose-500 mb-4 font-semibold text-center">
+          {errorMsg}
+        </Text>
+      ) : null}
 
       <Controller
         control={control}
         name='email'
-        render={({
-          field: {
-            onChange,
-            value
-          }
-        }) => (
+        render={({ field: { onChange, value } }) => (
           <AppGUI
-            placeholder="Email"
+            placeholder="Email Address"
             value={value}
             onChangeText={onChange}
-            error={
-              errors?.email?.message
-            }
+            error={errors?.email?.message}
           />
         )}
       />
@@ -101,41 +91,35 @@ const signIn = () => {
       <Controller
         control={control}
         name='password'
-        render={({
-          field: {
-            onChange,
-            value
-          }
-        }) => (
+        render={({ field: { onChange, value } }) => (
           <AppGUI
-            placeholder='Passowrd'
+            placeholder='Password'
             value={value}
             onChangeText={onChange}
-            error={
-              errors?.password?.message
-            }
+            secureTextEntry
+            error={errors?.password?.message}
           />
         )}
       />
+
       <TouchableOpacity
         onPress={handleSubmit(onSubmit)}
-        className='bg-blue-500 p-4 rounded-xl mt-2'
+        disabled={submitting}
+        className={`bg-violet-600 p-4 rounded-xl mt-4 active:bg-violet-700 ${submitting ? 'opacity-70' : ''}`}
       >
-        <Text
-          className=' text-center text-white font-semibold'
-        >
-          Register
+        <Text className='text-center text-white font-semibold text-lg'>
+          {submitting ? 'Logging in...' : 'Login'}
         </Text>
       </TouchableOpacity>
 
-      <Link
-        href={"/(auth)/signUp"}
-        className=' text-center mt-6'
-      >
-        Already A User Click Here
-      </Link>
+      <View className="flex-row justify-center mt-6">
+        <Text className="text-zinc-400">Don't have an account? </Text>
+        <Link href={"/(auth)/signUp"} className='text-violet-400 font-semibold'>
+          Sign Up
+        </Link>
+      </View>
     </View>
   )
 }
 
-export default signIn
+export default SignInScreen

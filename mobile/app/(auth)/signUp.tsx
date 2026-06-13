@@ -3,111 +3,105 @@ import {
   Text,
   TouchableOpacity
 } from 'react-native'
-import React from 'react'
-import { Link, Redirect } from 'expo-router'
+import React, { useState } from 'react'
+import { Link, Redirect, router } from 'expo-router'
+import { Controller, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import AppGUI from '@/src/components/ui/AppGUI'
 import {
-  Controller,
-  useForm
-} from "react-hook-form";
-import {
-  zodResolver
-} from "@hookform/resolvers/zod";
-import {
-  loginSchema,
-  loginFromData
-} from "@/src/validation/auth.validation";
-import AppGUI from '@/src/components/ui/AppGUI';
-import {
-  router
-} from "expo-router";
+  registerFormData,
+  registerSchema
+} from '@/src/validation/auth.validation'
+import { userAuthStore } from '@/src/store/auth.store'
+import { registerUser } from '@/src/services/auth.services'
+import { setAuthData } from '@/src/utils/storage.helper'
 
-
-import {
-  loginUser
-} from "@/src/services/auth.services";
-import {
-  userAuthStore
-} from "@/src/store/auth.store";
-import {
-  setAuthData
-} from "@/src/utils/storage.helper"
-
-
-
-const signUp = () => {
+const SignUpScreen = () => {
   const isAuthenticated = userAuthStore((state) => state.isAuthenticated);
   const setAuth = userAuthStore((state) => state.setAuth);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const {
     control,
     handleSubmit,
     formState: { errors }
-  } = useForm<loginFromData>({
-    resolver: zodResolver(loginSchema)
+  } = useForm<registerFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: ""
+    }
   });
 
   if (isAuthenticated) {
     return <Redirect href="/(tabs)" />;
   }
 
-  // handle the submit login feature 
-  const onSubmit = async (
-    data: loginFromData
-  ) => {
+  const onSubmit = async (data: registerFormData) => {
     try {
-      console.log(data);
-      const response = await loginUser(
+      setSubmitting(true);
+      setErrorMsg("");
+      const response = await registerUser(
+        data.name,
         data.email,
         data.password
       );
 
-      // setting up the or updating the user 
-      await setAuthData(
-        response.token,
-        response.user
-      );
+      // Store locally
+      await setAuthData(response.token, response.user);
 
-      setAuth(
-        response.token,
-        response.user
-      );
+      // Set Zustand state
+      setAuth(response.token, response.user);
 
-      router.replace(
-        "/(tabs)"
-      );
-    } catch (error) {
+      router.replace("/(tabs)");
+    } catch (error: any) {
       console.log(error);
+      setErrorMsg(error?.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
   };
+
   return (
-    <View className="flex-1 justify-center px-6 bg-white">
-      <Text className="text-4xl font-bold mb-2">
-        Welcome Back
+    <View className="flex-1 justify-center px-6 bg-[#09090b]">
+      <Text className="text-4xl font-bold mb-2 text-zinc-50">
+        Create Account
       </Text>
 
-      <Text className="text-gray-500 mb-8">
-        Login to continue
+      <Text className="text-zinc-400 mb-8 font-medium">
+        Register to start your AI-powered learning
       </Text>
+
+      {errorMsg ? (
+        <Text className="text-rose-500 mb-4 font-semibold text-center">
+          {errorMsg}
+        </Text>
+      ) : null}
+
+      <Controller
+        control={control}
+        name="name"
+        render={({ field: { onChange, value } }) => (
+          <AppGUI
+            placeholder="Full Name"
+            value={value}
+            onChangeText={onChange}
+            error={errors.name?.message}
+          />
+        )}
+      />
 
       <Controller
         control={control}
         name="email"
-        render={({
-          field: {
-            onChange,
-            value,
-          },
-        }) => (
+        render={({ field: { onChange, value } }) => (
           <AppGUI
-            placeholder="Email"
+            placeholder="Email Address"
             value={value}
-            onChangeText={
-              onChange
-            }
-            error={
-              errors.email
-                ?.message
-            }
+            onChangeText={onChange}
+            error={errors.email?.message}
           />
         )}
       />
@@ -115,57 +109,35 @@ const signUp = () => {
       <Controller
         control={control}
         name="password"
-        render={({
-          field: {
-            onChange,
-            value,
-          },
-        }) => (
+        render={({ field: { onChange, value } }) => (
           <AppGUI
             placeholder="Password"
             value={value}
-            onChangeText={
-              onChange
-            }
+            onChangeText={onChange}
             secureTextEntry
-            error={
-              errors.password
-                ?.message
-            }
+            error={errors.password?.message}
           />
         )}
       />
 
       <TouchableOpacity
-        onPress={handleSubmit(
-          onSubmit
-        )}
-        className="
-          bg-blue-500
-          p-4
-          rounded-xl
-          mt-2
-        "
+        onPress={handleSubmit(onSubmit)}
+        disabled={submitting}
+        className={`bg-violet-600 p-4 rounded-xl mt-4 active:bg-violet-700 ${submitting ? 'opacity-70' : ''}`}
       >
-        <Text className="text-center text-white font-semibold">
-          Login
+        <Text className="text-center text-white font-semibold text-lg">
+          {submitting ? 'Creating Account...' : 'Register'}
         </Text>
       </TouchableOpacity>
 
-      <Link
-        href="/(auth)/signIn"
-        className="text-center mt-6"
-      >
-        Don't have an account?
-      </Link>
-      {/* <Link
-        href="/(tabs)/upload"
-        className="text-center mt-6"
-      >
-        Don't have an account?
-      </Link> */}
+      <View className="flex-row justify-center mt-6">
+        <Text className="text-zinc-400">Already have an account? </Text>
+        <Link href="/(auth)/signIn" className="text-violet-400 font-semibold">
+          Login
+        </Link>
+      </View>
     </View>
   )
 }
 
-export default signUp
+export default SignUpScreen

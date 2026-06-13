@@ -1,9 +1,10 @@
-import { ImageSourcePropType } from "react-native"
+declare module "*.png" {
+  const value: any;
+  export default value;
+}
 
 declare global {
     name: string;
     title: string;
-    icon: ImageSourcePropType;
+    icon: any;
 }
-
-export {}

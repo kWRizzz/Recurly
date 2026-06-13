@@ -50,16 +50,15 @@ const notes = () => {
 
 
   return (
-    <View
-      className=' flex-1 p-4 bg-gray-400'
-    >
-      <Text
-        className=' text-3xl font-semibold mb-6'
-      >notes</Text>
+    <View className='flex-1 p-6 pt-12 bg-[#09090b]'>
+      <Text className='text-3xl font-bold mb-6 text-zinc-50'>
+        My Notes
+      </Text>
 
       <FlatList
         data={notes}
         keyExtractor={(item) => item._id}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <NoteCard
             note={item}

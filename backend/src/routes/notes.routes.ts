@@ -12,7 +12,7 @@ router.get("/",protect,getNotes)
 
 router.get("/:id",protect,getNotesById)
 
-router.get("/:id",protect,deleteNote)
+router.delete("/:id",protect,deleteNote)
 
 
 export default router

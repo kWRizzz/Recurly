@@ -12,8 +12,6 @@ interface prop {
     secureTextEntry?: boolean
 }
 
-
-
 const AppGUI = ({
     placeholder,
     value,
@@ -22,27 +20,25 @@ const AppGUI = ({
     secureTextEntry
 }: prop) => {
     return (
-        <View
-            className=' mb-4'
-        >
+        <View className='mb-4'>
             <TextInput
                 placeholder={placeholder}
+                placeholderTextColor="#71717a"
                 value={value}
                 onChangeText={onChangeText}
-                secureTextEntry={
-                    secureTextEntry
-                }
+                secureTextEntry={secureTextEntry}
                 className="
-          border
-          border-gray-300
-          rounded-xl
-          p-4
-          bg-white
-        "
+                  border
+                  border-zinc-800
+                  rounded-xl
+                  p-4
+                  bg-zinc-900
+                  text-zinc-100
+                "
             />
 
             {error && (
-                <Text className="text-red-500 mt-1">
+                <Text className="text-rose-500 mt-1 text-sm font-medium">
                     {error}
                 </Text>
             )}
