@@ -8,10 +8,46 @@ import {
   TouchableOpacity,
 } from "react-native";
 
+import {
+  Note
+} from "@/src/types/note.types";
+import {
+  getNotesById
+} from "@/src/services/notes.services";
+import { useEffect, useState } from "react";
 
 export default function NoteDetail() {
 
   const { id } = useLocalSearchParams()
+
+  const [note, setNote] = useState<Note | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    
+    const fetchNotes= async () => {
+      try {
+        const data = await getNotesById(
+          id as string
+        )
+        setNote(data)
+      } catch (error) {
+        console.log(" error in fetching the notes" + error);
+      }finally{
+        setLoading(false)
+      }
+    }
+    fetchNotes()
+    
+  }, [])
+  
+  if (loading) {
+  return (
+    <Text>
+      Loading...
+    </Text>
+  );
+}
 
   return (
     <View className="flex-1 p-6">
