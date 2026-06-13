@@ -5,31 +5,38 @@ import {
   FlatList,
   Alert
 } from 'react-native'
-import React,{
+import React, {
   useEffect,
   useState
 } from 'react'
 
-import { 
+import {
   Note
- } from "@/src/types/note.types";
-import { 
+} from "@/src/types/note.types";
+import {
   getNotes,
   uploadPdf
- } from "@/src/services/notes.services";
+} from "@/src/services/notes.services";
 import NoteCard from '@/src/components/notes/NoteCard';
-import{
-  router
+import {
+  router,
+  useLocalSearchParams
 } from "expo-router"
+
+import { 
+  deleteNote
+ } from "@/src/services/notes.services";
 
 const notes = () => {
 
+  const {id}=useLocalSearchParams()
+
   const [notes, setNotes] = useState<Note[]>([])
 
-  const fetchNotes =async ()=>{
+  const fetchNotes = async () => {
     try {
-      const data= await getNotes()
-      setNotes(data)      
+      const data = await getNotes()
+      setNotes(data)
     } catch (error) {
       console.log(error);
     }
@@ -38,7 +45,9 @@ const notes = () => {
   useEffect(() => {
     fetchNotes()
   }, [])
-  
+
+
+
 
   return (
     <View
@@ -50,11 +59,11 @@ const notes = () => {
 
       <FlatList
         data={notes}
-        keyExtractor={(item)=>item._id}
-        renderItem={({item})=>(
+        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => (
           <NoteCard
             note={item}
-            onPress={()=>router.push(`/note/${item._id}`)}
+            onPress={() => router.push(`/note/${item._id}`)}
           />
         )}
       />

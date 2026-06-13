@@ -45,3 +45,13 @@ export const getNotesById= async (
 
     return respone.data.note    
 }
+
+export const deleteNote= async (
+    id:string
+) => {
+    const respone = await api.delete(
+        `/notes/${id}`
+    )
+
+    return respone.data
+}

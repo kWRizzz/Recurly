@@ -11,6 +11,7 @@ import {
 import { ActivityIndicator, View } from "react-native";
 
 
+
 export default function RootLayout() {
   useAuthInit();
 
@@ -40,5 +41,6 @@ export default function RootLayout() {
         headerShown: false
       }}
     />
+   
   </>
 }

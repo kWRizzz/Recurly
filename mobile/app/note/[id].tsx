@@ -6,6 +6,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Alert
 } from "react-native";
 
 import {
@@ -15,6 +16,10 @@ import {
   getNotesById
 } from "@/src/services/notes.services";
 import { useEffect, useState } from "react";
+
+import {
+  deleteNote
+} from "@/src/services/notes.services";
 
 export default function NoteDetail() {
 
@@ -40,6 +45,45 @@ export default function NoteDetail() {
     fetchNotes()
 
   }, [])
+
+  const handleDelete =
+    async () => {
+
+      Alert.alert(
+        "Delete Note",
+        "Are you sure?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Delete",
+
+            style: "destructive",
+
+            onPress: async () => {
+
+              try {
+
+                await deleteNote(
+                  id as string
+                );
+
+                router.back();
+
+              } catch (error) {
+
+                console.log(error);
+
+              }
+
+            },
+          },
+        ]
+      );
+
+    };
 
   if (loading) {
     return (
@@ -87,7 +131,7 @@ export default function NoteDetail() {
 
       <TouchableOpacity
         onPress={
-          ()=>router.push(
+          () => router.push(
             `/quiz/${id}`
           )
         }
@@ -106,7 +150,7 @@ export default function NoteDetail() {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={()=>router.push(
+        onPress={() => router.push(
           `/chat/${id}`
         )}
         className="
@@ -120,6 +164,25 @@ export default function NoteDetail() {
           className="text-white text-center"
         >
           Chat With Notes
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={handleDelete}
+        className="
+    bg-red-500
+    p-4
+    rounded-xl
+    mt-4
+  "
+      >
+        <Text
+          className="
+      text-white
+      text-center
+    "
+        >
+          Delete Note
         </Text>
       </TouchableOpacity>
     </View>
